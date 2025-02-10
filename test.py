@@ -36,15 +36,15 @@ def test_saved_model(model_path="saved_weights/model.pth"):
         # print first 10 predictions against actual values
         # For <movie title>, model predicted <prediction>, actual <actual>
         print("\nSample Predictions vs Actual:")
-        for i in range(10):
-            print(f"For {titles[int(i)]}, model predicted {output[i].item()} vs. actual {target[i].item()}")
+        for i in range(min(10, len(titles))):
+            print(f"For {titles.iloc[i]}, model predicted {output[i].item()} vs. actual {target[i].item()}")
 
         # print best prediction and worst prediction
         # For <movie title>, model predicted <prediction>, actual <actual>
         print("\nBest and Worst Predictions:")
         errors = torch.abs(output - target)
-        worst = torch.argmax(errors)
-        best = torch.argmin(errors)
+        worst = torch.argmax(errors).item()
+        best = torch.argmin(errors).item()
         # convert to numpy arrays
         titles = titles.to_numpy()
         output = output.numpy().flatten()
@@ -59,7 +59,7 @@ def test_new_model():
 
     # create training and validation sets
     # use 80% of the data for training and 20% for validation
-    X_train, X_val, y_train, y_val = train_test_split(features, target, test_size=0.2)
+    X_train, X_val, y_train, y_val = train_test_split(features, target, test_size=0.2, random_state=42)
 
     # Define model (feed-forward, two hidden layers)
     model, optimizer = create_model(X_train)
